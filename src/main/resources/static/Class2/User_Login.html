@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录 - 电商主页</title>
+    <link rel="stylesheet" href="../Styles/Styles_ofMain.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="../Picture/LOGO.png" alt="电商网站Logo" id="logo">
+        </div>
+        <nav class="navbar">
+            <ul>
+                <li><a href="../Index.html">首页</a></li>
+                <li><a href="../Class2/About_Us.html" target="_blank">关于我们</a></li>
+                <li><a href="../Class2/User_Register.html" target="_blank">注册</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="login-form">
+            <h1>登录</h1>
+            <form id = "loginForm" action="#" method="post">
+                <label for="username">用户名:</label>
+                <input type="text" id="username" name="username" required><br><br>
+
+                <label for="password">密码:</label>
+                <input type="password" id="password" name="password" required><br><br>
+
+                <input type="checkbox" id="remember-me" name="remember-me">
+                <label for="remember-me">记住我</label><br><br>
+
+                <button type="submit">登录</button>
+            </form>
+            <p>没有账号？<a href="../Class2/User_Register.html">注册新账号</a></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 小组的版权所有。</p>
+    </footer>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await fetch('http://localhost:8080/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                // 解析后端返回的 JSON（即使是 401 也会带有 message）
+                const result = await res.json().catch(() => ({}));
+
+                // 用户名或密码错误时，后端返回 401，这是正常的业务结果，
+                // 直接提示用户，不当成系统异常处理
+                if (res.status === 401) {
+                    alert('登录失败：' + (result.message || '用户名或密码错误'));
+                    return;
+                }
+
+                if (!res.ok) {
+                    // 其它非预期状态码（如 500）才视为系统错误
+                    throw new Error('登录请求失败: ' + res.status + ' ' + (result.message || ''));
+                }
+
+                if (result.success) {
+                    const payload = result.data || result.user || result;
+                    const returnedId = payload && (payload.id || payload.userId || payload.uid);
+
+                    //同时存储用户名和ID
+                    if (returnedId) {
+                        localStorage.setItem('userId', returnedId);
+                        localStorage.setItem('username', username);
+                        console.log('存储了用户信息:', { userId: returnedId, username });
+                    } else {
+
+                        localStorage.setItem('username', username);
+                        console.warn('后端未返回userId,仅存储username');
+                    }
+
+                    console.log('登录成功！');
+                    window.location.href = '/Index.html';
+                } else {
+                    alert('登录失败：' + (result.message || '用户名或密码错误'));
+                }
+            } catch (err) {
+                console.error('登录过程发生错误:', err);
+                alert('登录过程发生错误，请重试');
+            }
+        });
+    </script>
+
+
+</body>
+</html>

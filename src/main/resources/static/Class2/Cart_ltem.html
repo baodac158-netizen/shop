@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>我的购物车</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #f4f4f4;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .total {
+            text-align: right;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<h1>我的购物车</h1>
+
+<table id="cartTable">
+    <thead>
+    <tr>
+        <th>商品ID</th>
+        <th>数量</th>
+        <th>单价</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<div class="total">
+    总价：<span id="totalPrice">0</span> 元
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // === 1. 检查登录状态 ===
+        const userId = localStorage.getItem("userId");
+        const username = localStorage.getItem("loggedInUser");
+
+        if (!userId || !username) {
+            alert("请先登录！");
+            window.location.href = "index.html";
+            return;
+        }
+
+        console.log("当前用户：", username, "ID：", userId);
+
+        // 防抖函数
+        function debounce(func, delay) {
+            let timer;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        // === 2. 加载购物车 ===
+        function loadCart() {
+            const tbody = document.querySelector("#cartTable tbody");
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">加载中...</td></tr>';
+
+            fetch(`http://localhost:8080/api/cart?userId=${encodeURIComponent(userId)}`)
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}: 加载购物车失败`);
+                    return res.json();
+                })
+                .then(data => {
+                    tbody.innerHTML = "";
+
+                    if (!Array.isArray(data)) {
+                        throw new Error("返回数据格式错误");
+                    }
+
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">购物车是空的</td></tr>';
+                        document.getElementById("totalPrice").textContent = "0.00";
+                        return;
+                    }
+
+                    let total = 0;
+
+                    data.forEach(item => {
+                        const price = parseFloat(item.price) || 0;
+                        const quantity = parseInt(item.quantity) || 1;
+                        const itemId = parseInt(item.id);
+                        const productId = item.productId || '未知';
+
+                        total += price * quantity;
+
+                        const row = document.createElement("tr");
+
+                        // 商品 ID 列
+                        const tdProductId = document.createElement("td");
+                        tdProductId.textContent = productId;
+                        row.appendChild(tdProductId);
+
+                        // 数量列
+                        const tdQuantity = document.createElement("td");
+                        const input = document.createElement("input");
+                        input.type = "number";
+                        input.min = "1";
+                        input.max = "999";
+                        input.value = quantity;
+                        input.dataset.itemId = itemId;
+
+                        input.addEventListener("change", debounce(function() {
+                            const newQuantity = parseInt(this.value);
+                            if (newQuantity < 1) {
+                                alert("数量不能小于1");
+                                this.value = 1;
+                                return;
+                            }
+                            updateQuantity(itemId, newQuantity);
+                        }, 500));
+
+                        tdQuantity.appendChild(input);
+                        row.appendChild(tdQuantity);
+
+                        // 价格列
+                        const tdPrice = document.createElement("td");
+                        tdPrice.textContent = `¥${price.toFixed(2)}`;
+                        row.appendChild(tdPrice);
+
+                        // 操作列
+                        const tdAction = document.createElement("td");
+                        const deleteBtn = document.createElement("button");
+                        deleteBtn.textContent = "删除";
+                        deleteBtn.className = "delete-btn";
+                        deleteBtn.onclick = function() {
+                            deleteItem(itemId);
+                        };
+                        tdAction.appendChild(deleteBtn);
+                        row.appendChild(tdAction);
+
+                        tbody.appendChild(row);
+                    });
+
+                    document.getElementById("totalPrice").textContent = total.toFixed(2);
+                })
+                .catch(err => {
+                    console.error("购物车加载出错:", err);
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:red;">加载失败，请刷新页面重试</td></tr>';
+                    alert("加载购物车失败：" + err.message);
+                });
+        }
+
+        // === 3. 更新购物车数量 ===
+        function updateQuantity(cartItemId, quantity) {
+            const itemId = parseInt(cartItemId);
+            const newQuantity = parseInt(quantity);
+
+            if (isNaN(itemId) || isNaN(newQuantity) || newQuantity < 1) {
+                alert("无效的数量");
+                loadCart();
+                return;
+            }
+
+            const inputs = document.querySelectorAll("#cartTable input");
+            inputs.forEach(input => input.disabled = true);
+
+
+            fetch(`http://localhost:8080/api/cart/update`, {
+                method: "PUT",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    id: itemId,
+                    quantity: newQuantity,
+                    userId: parseInt(userId)  // 添加 userId
+                })
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}: 更新失败`);
+                    return res.text();
+                })
+                .then(() => {
+                    loadCart();
+                })
+                .catch(err => {
+                    console.error("更新数量失败:", err);
+                    alert("修改数量失败：" + err.message);
+                    loadCart();
+                })
+                .finally(() => {
+                    inputs.forEach(input => input.disabled = false);
+                });
+        }
+
+        // === 4. 删除购物车项 ===
+        function deleteItem(cartItemId) {
+            if (!confirm("确定删除该商品？")) return;
+
+            const itemId = parseInt(cartItemId);
+            if (isNaN(itemId)) {
+                alert("无效的商品ID");
+                return;
+            }
+
+
+            fetch(`http://localhost:8080/api/cart/delete?cartItemId=${encodeURIComponent(itemId)}`, {
+                method: "DELETE"
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}: 删除失败`);
+                    return res.text();
+                })
+                .then(() => {
+                    loadCart();
+                })
+                .catch(err => {
+                    console.error("删除失败:", err);
+                    alert("删除失败：" + err.message);
+                });
+        }
+
+        // 初始加载
+        loadCart();
+    });
+</script>
+
+</body>
+</html>

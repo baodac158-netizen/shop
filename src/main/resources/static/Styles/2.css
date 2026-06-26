@@ -1,0 +1,138 @@
+/* ========== 二级页面基础样式 ========== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* ========== 头部导航栏 ========== */
+header {
+    background-color: #222;
+    padding: 15px 0;
+    text-align: center;
+}
+
+.logo-container img {
+    height: 60px;
+}
+
+.navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar ul li {
+    display: inline;
+    margin: 0 20px;
+}
+
+.navbar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar ul li a:hover {
+    color: #ff9900;
+}
+
+/* ========== 产品详情 ========== */
+main {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+/* 产品详情卡片 */
+.product-detail {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* 产品图片 */
+.product-image {
+    width: 100%;
+    max-width: 350px;
+    margin: 20px 0;
+}
+
+/* 描述文本 */
+.product-description {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+/* 价格 */
+.product-price {
+    font-size: 22px;
+    font-weight: bold;
+    color: #e60000;
+    margin-bottom: 15px;
+}
+
+/* ========== 购物车按钮 ========== */
+form {
+    margin-top: 10px;
+}
+
+form input[type="number"] {
+    width: 50px;
+    padding: 5px;
+    font-size: 16px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form input[type="submit"] {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+form input[type="submit"]:hover {
+    background-color: #e65c00;
+}
+
+/* ========== 用户评价 ========== */
+.customer-reviews {
+    background: #fafafa;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+    margin-top: 20px;
+    text-align: left;
+}
+
+.customer-reviews p {
+    margin: 5px 0;
+}
+
+/* 评分星级 */
+.rating {
+    color: gold;
+}
+
+/* ========== 页脚 ========== */
+footer {
+    text-align: center;
+    background-color: #222;
+    color: white;
+    padding: 15px 0;
+    margin-top: 30px;
+}
+

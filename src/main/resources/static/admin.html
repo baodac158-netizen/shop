@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>后台管理中心</title>
+  <link rel="stylesheet" href="./Styles/Styles_ofAdmin.css">
+</head>
+
+
+<body>
+<!-- 登录身份验证 -->
+<script>
+  const user = localStorage.getItem('loggedInUser');
+  if (!user || user !== 'admin') {
+    alert('请先登录管理员账号');
+    window.location.href = './Class2/User_Login.html';
+  }
+</script>
+
+<header>
+  <h1>欢迎回来，管理员</h1>
+</header>
+
+<nav>
+  <button onclick="showEmp()">员工管理</button>
+  <button onclick="showDept()">部门管理</button>
+  <button onclick="showProductsofBlackground()">商品管理</button>
+</nav>
+
+<button onclick="showAddEmpForm()">➕ 添加员工</button>
+<button onclick="showAddDeptForm()">➕ 添加部门</button>
+<button onclick="showAddProductForm()">➕ 添加商品</button>
+
+<!-- 弹窗容器 -->
+<div id="product-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('product-modal')">&times;</span>
+    <form id="add-product-form" style="display:none; margin:20px;
+    max-height: 500px;
+    overflow-y: auto;">
+      <!-- 新增商品表单 -->
+      <h3>新增商品</h3>
+      <label>商品名称：<input name="name" required></label><br>
+      <label>描述：<textarea name="description" required></textarea></label><br>
+      <label>价格：<input name="price" type="number" required></label><br>
+      <label>库存：<input name="stock" type="number" required></label><br>
+      <label>商品图片：<input type="file" id="upload-image" name="image" accept="image/*" required></label><br>
+      <input type="hidden" name="imageUrl" id="uploaded-url"> <!-- 存放返回的云链接 -->
+      <button type="submit">提交</button>
+    </form>
+
+
+    <!-- 新增员工表单 -->
+    <div id="add-emp-form" style="display:none; margin:20px;">
+      <h3 id="title-name"></h3>
+      <input type="hidden" id="emp-id">
+      <label>用户名：<input id="emp-username" required></label><br>
+      <label>姓名：<input id="emp-name" required></label><br>
+      <label>性别：
+        <select id="emp-gender">
+          <option value="1">男</option>
+          <option value="2">女</option>
+        </select>
+      </label><br>
+      <label>头像：<input type="file" id="image" name="image" accept="image/*" required></label><br>
+      <input type="hidden" name="imageUrl" id="url">
+      <button onclick="submitEmp()">提交</button>
+    </div>
+
+
+    <!-- 新增部门弹窗表单 -->
+    <div id="add-dept-form" style="display:none; margin: 20px;">
+      <h3>新增部门</h3>
+      <label>部门名称：<input id="dept-name" required></label><br>
+      <button onclick="submitDept()">提交</button>
+    </div>
+
+    <!-- 删除商品表单 -->
+    <form id="delete-products-form" style="display:none; margin:20px;">
+      <h3>删除商品</h3>
+      <label>请输入商品id：<input name="id" type="number" required></label>
+      <button type="submit">提交</button>
+    </form>
+
+  </div>
+</div>
+
+<main id="main-panel">
+  <!-- 这里动态加载内容 -->
+</main>
+<script src="./JS/dept.js"></script>
+<script src="./JS/common.js"></script>
+<script src="./JS/emp.js"></script>
+<script src="./JS/main.js"></script>
+<script src="./JS/product.js"></script>
+</body>
+</html>

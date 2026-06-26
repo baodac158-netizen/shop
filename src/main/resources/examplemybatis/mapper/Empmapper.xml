@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="examplemybatis.mapper.EmpMapper">
+
+    <insert id="insert" parameterType="examplemybatis.pojo.Emp">
+        insert into emp(id, username, name, gender, image, job, entrydate, dept_id, create_time, update_time)
+        values (#{id},#{username},#{name},#{gender},#{image},#{job},#{entrydate},#{deptId},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="update" parameterType="examplemybatis.pojo.Emp">
+        UPDATE emp
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="username != null">username = #{username},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="entrydate != null">entrydate = #{entrydate},</if>
+            <if test="job != null">job = #{job},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+
+    <delete id="delete" parameterType="java.util.List">
+        DELETE FROM emp WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="list" resultType="examplemybatis.pojo.Emp" useCache="false">
+        select * from emp
+        <where>
+            <if test="name != null">
+                name like concat('%',#{name},'%')
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="begin != null and end != null">
+                and entrydate between #{begin} and #{end}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+
+    <select id="selectByid" resultType="examplemybatis.pojo.Emp">
+        select * from emp
+        <where>
+            <if test=" id != null">
+                id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByUsernameAndPassword" resultType="examplemybatis.pojo.Emp">
+        SELECT * FROM emp
+        WHERE username = #{username}
+          AND password = #{password}
+    </select>
+    <select id="selectByUsername" resultType="examplemybatis.pojo.Emp">
+        SELECT * FROM emp WHERE username = #{username}
+    </select>
+
+
+</mapper>

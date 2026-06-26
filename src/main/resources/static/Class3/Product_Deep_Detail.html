@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+<link rel="stylesheet" href="../Styles/2.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情 - 电商主页</title>
+    <link rel="stylesheet" href="../Styles/Styles_ofMain.css">
+</head>
+<body>
+<main>
+    <section class="product-deep-detail"></section>
+</main>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get('id');
+        if (!productId) return alert('未指定商品 ID');
+
+        const res = await fetch(`http://localhost:8080/api/products/${productId}`);
+        const product = await res.json();
+
+        const container = document.getElementsByClassName('product-deep-detail');
+
+        container.innerHTML = `
+    <!-- 图片展示 -->
+    <div class="product-gallery">
+      <div class="main-image">
+        <img id="main-product-image" src="${product.imageUrl[0]}" alt="主图">
+      </div>
+      <div class="thumbnail-list">
+        ${product.imageUrl.map(url => `<img src="${url}" onclick="document.getElementById('main-product-image').src='${url}'">`).join('')}
+      </div>
+    </div>
+
+    <!-- 尺码选择 -->
+    <div class="product-size">
+      <h3>选择尺码</h3>
+      <div class="size-options">
+        ${product.sizes.map(size => `<button>${size}</button>`).join('')}
+      </div>
+    </div>
+
+    <!-- 商品参数 -->
+    <div class="product-params">
+      <h3>商品参数</h3>
+      <table>
+        <tr><th>品牌</th><td>${product.brand}</td></tr>
+        <tr><th>材质</th><td>${product.material}</td></tr>
+        <tr><th>适用场景</th><td>${product.scene}</td></tr>
+        <tr><th>上市时间</th><td>${product.releaseTime}</td></tr>
+      </table>
+    </div>
+
+    <!-- 用户评价 -->
+    <div class="product-reviews">
+      <h3>用户评价</h3>
+      ${product.reviews.map(r => `
+        <div class="review">
+          <p><strong>${r.user}</strong> ${'⭐'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</p>
+          <p>${r.comment}</p>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- 配送服务 -->
+    <div class="product-service">
+      <h3>配送与服务</h3>
+      <ul>
+        <li>🚚 全国包邮</li>
+        <li>🔄 7天无理由退换货</li>
+        <li>✅ 正品保障</li>
+      </ul>
+    </div>
+
+    <!-- 相关推荐 -->
+    <div class="product-recommendations">
+      <h3>相关推荐</h3>
+      <div class="recommend-list">
+        ${product.recommendations.map(item => `
+          <div class="recommend-item">
+            <a href="Product_Detail.html?id=${item.id}">
+              <img src="${item.imageUrl}" alt="${item.name}">
+              <p>${item.name}</p>
+              <p>¥${item.price}</p>
+            </a>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+    });
+</script>

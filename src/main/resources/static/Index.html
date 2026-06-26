@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电商主页</title>
+    <link rel="stylesheet" href="./Styles/Styles_ofMain.css">
+    <link rel="stylesheet" href="./Styles/Styles_ofAd.css">
+</head>
+<body>
+<!-- 顶部区域：Logo部分 -->
+<header>
+    <div class="logo-container">
+        <img src="./Picture/LOGO.png" alt="上传您的Logo图片" id="logo">
+
+        <!-- 用户登录部分 -->
+        <div class="user-auth" id="user-auth">
+            <!-- JS注入 -->
+        </div>
+
+    </div>
+
+    <!-- 导航条 -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="#">首页</a></li>
+            <li><a href="./Class2/About_Us.html" target="_blank">关于我们</a></li>        
+            <li><a href="./Class2/Contact_Us.html">联系我们</a></li>
+        </ul>
+    </nav>
+
+</header>
+<!-- 顶部横幅广告区域 -->
+<div class="top-banner-ad">
+    <img src="./Picture/Guanggao.jpg" alt="耐克「灵蛇迎新」系列" class="banner-ad-image">
+
+    <!-- 广告内容容器（文字 + 搜索栏 + 视频） -->
+    <div class="banner-content">
+        <div class="banner-ad-text">
+            <h2>耐克「灵蛇迎新」系列</h2>
+            <p>探索新年新风格</p>
+        </div>
+
+        <!-- 搜索栏 -->
+        <section class="search-bar">
+            <h2>搜索产品</h2>
+            <form id="search-form">
+                <input type="text" id="search-input" name="search" placeholder="根据产品名称搜索">
+                <button type="submit">搜索</button>
+            </form>
+        </section>
+
+        <!-- 视频 -->
+        <section class="video-section">
+            <video controls width="600">
+                <source src="../Videos/product_intro.mp4" type="video/mp4">
+                您的浏览器不支持 HTML5 视频，请升级浏览器。
+            </video>
+        </section>
+    </div>
+</div>
+
+<h2 style="text-align: center;
+  margin-top: 30px;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;">我们的产品</h2>
+<section class="product-list" id="product-list">
+    <!-- 这里将由JS动态插入商品项 -->
+</section>
+
+
+<!-- 购物帮助区域 -->
+<section class="shopping-help">
+    <h2>购物帮助指南</h2>
+    <p>
+        欢迎来到我们的商店！以下是购物体验的帮助指南：
+    </p>
+    <ul>
+        <li>通过导航菜单浏览我们的产品。</li>
+        <li>使用搜索框快速找到您想要的商品。</li>
+        <li>点击“添加到购物车”按钮，将商品添加至购物车。</li>
+        <li>如有任何问题，请访问“帮助”或联系我们。</li>
+    </ul>
+
+</section>
+
+<!-- 页脚部分 -->
+<footer>
+    <p>&copy; 小组的版权所有。</p>
+</footer>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        // 1. 检查用户登录状态
+        await initUserAuth();
+
+        // 2. 加载商品列表
+        await loadAllProducts();
+
+        // 3. 绑定搜索事件
+        initSearch();
+    });
+
+    async function initUserAuth() {
+        const userId = localStorage.getItem('userId');
+        const username = localStorage.getItem('username');
+        const userAuthDiv = document.getElementById('user-auth');
+
+        if (!userAuthDiv) {
+            console.error('未找到 user-auth 元素');
+            return;
+        }
+
+        //优先使用已存储的username,避免不必要的请求
+        if (username) {
+            try {
+                let userData = { username };
+
+                // 如果有userId,尝试获取完整信息
+                if (userId) {
+                    try {
+                        const res = await fetch(`http://localhost:8080/emps/${userId}`);
+                        if (res.ok) {
+                            const result = await res.json();
+                            userData = result.data || result;
+                        }
+                    } catch (error) {
+                        console.warn('获取完整用户信息失败,使用缓存的username:', error);
+                    }
+                }
+
+                // 显示用户信息
+                userAuthDiv.innerHTML = `
+                欢迎你，${userData.username}<br>
+                <button id="logoutBtn">退出登录</button>
+            `;
+
+                document.getElementById('logoutBtn').onclick = () => {
+                    // 清除所有相关数据
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('userId');
+                    window.location.reload();
+                };
+
+                // 管理员按钮
+                if (userData.username === 'admin') {
+                    const adminBtn = document.createElement('button');
+                    adminBtn.textContent = '进入后台管理';
+                    adminBtn.onclick = () => window.open('/admin.html', '_blank');
+                    userAuthDiv.appendChild(document.createElement('br'));
+                    userAuthDiv.appendChild(adminBtn);
+                }
+
+            } catch (error) {
+                console.error("处理用户信息失败:", error);
+                // 清除无效数据
+                localStorage.removeItem('username');
+                localStorage.removeItem('userId');
+                showLoginLinks(userAuthDiv);
+            }
+        } else {
+            showLoginLinks(userAuthDiv);
+        }
+    }
+
+
+    function showLoginLinks(container) {
+        container.innerHTML = `
+        <a href="./Class2/User_Login.html">登录</a><br>
+        <a href="./Class2/User_Register.html">注册</a>
+    `;
+    }
+
+    async function loadAllProducts() {
+        try {
+            const res = await fetch('http://localhost:8080/api/products');
+
+            if (!res.ok) throw new Error('获取商品列表失败');
+
+            const products = await res.json();
+            renderProducts(products);
+        } catch (error) {
+            console.error('加载商品失败:', error);
+            document.getElementById('product-list').innerHTML =
+                '<p style="text-align:center;color:red;">加载商品失败，请稍后重试。</p>';
+        }
+    }
+
+    function renderProducts(products) {
+        const list = document.getElementById('product-list');
+        list.innerHTML = '';
+
+        if (!Array.isArray(products) || products.length === 0) {
+            list.innerHTML = '<p style="text-align:center;">没有找到相关商品。</p>';
+            return;
+        }
+
+        products.forEach(product => {
+            const item = document.createElement('div');
+            item.className = 'product-item';
+
+            const link = document.createElement('a');
+            link.href = `./Class2/Product_Detail.html?id=${encodeURIComponent(product.id)}`;
+            link.target = '_blank';
+
+            const img = document.createElement('img');
+            img.src = product.imageUrl || 'placeholder.jpg';
+            img.alt = product.name || '商品图片';
+
+            const nameP = document.createElement('p');
+            nameP.textContent = product.name || '未知商品';
+
+            const priceP = document.createElement('p');
+            priceP.textContent = `¥${product.price || 0}`;
+
+            link.appendChild(img);
+            link.appendChild(nameP);
+            link.appendChild(priceP);
+            item.appendChild(link);
+            list.appendChild(item);
+        });
+    }
+
+    function initSearch() {
+        const searchForm = document.getElementById('search-form');
+        if (!searchForm) return;
+
+        searchForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const keyword = document.getElementById('search-input')?.value.trim();
+
+            if (!keyword) {
+                await loadAllProducts();
+                return;
+            }
+
+            try {
+                const res = await fetch(
+                    `http://localhost:8080/api/products/search?keyword=${encodeURIComponent(keyword)}`
+                );
+
+                if (!res.ok) throw new Error('搜索失败');
+
+                const products = await res.json();
+                renderProducts(products);
+            } catch (error) {
+                console.error('搜索失败:', error);
+                alert('搜索失败，请稍后重试');
+            }
+        });
+    }
+
+
+</script>
+</html>

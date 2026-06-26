@@ -1,0 +1,362 @@
+/* 基本重置样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 页面主体布局 */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+/* 顶部区域 */
+header {
+    position: relative;   /* 让子元素能用绝对定位 */
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+}
+
+/* Logo 居中 */
+.logo-container {
+    text-align: center;
+}
+
+#logo {
+    width: 150px;
+}
+
+/* 登录部分靠右上角 */
+.user-auth {
+    position: absolute;
+    top: 10px;     /* 距离 header 顶部 10px */
+    right: 20px;   /* 距离右边 20px */
+}
+
+
+.video-section{
+    display: flex;
+    justify-content: center;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;  /*宣传视频的大小 */
+    background-color: #444;
+}
+
+.navbar ul {
+    list-style-type: none;
+    display: flex;
+}
+
+.navbar ul li {
+    margin: 0 15px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+}
+
+.navbar ul li a:hover {
+    color: #ffcc00; /* 鼠标悬停时的颜色 */
+}
+
+.user-auth {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.user-auth a {
+    color: #fff;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+.user-auth a:hover {
+    color: #ffcc00;
+}
+
+/* 最新动态区域 */
+.latest-news {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.latest-news h2 {
+    color: #333;
+}
+
+.latest-news p {
+    color: #666;
+}
+
+/* 商品列表区域 */
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px 0;
+    background-color: #fff;
+}
+
+.product-item {
+    flex: 0 0 30%;      /* 设定固定宽度为容器的 30% */
+    margin: 10px;
+    width: 30%;
+    text-align: center;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+}
+
+.product-item img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.product-item p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 搜索栏区域 */
+.search-bar {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.search-bar form {
+    display: inline-block;
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.search-bar input[type="text"] {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    margin-right: 10px;
+}
+
+.search-bar button {
+    padding: 5px 15px;
+    border: none;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.search-bar button:hover {
+    background-color: #ffcc00;
+}
+
+/* 购物帮助区域 */
+.shopping-help {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.shopping-help h2 {
+    color: #333;
+}
+
+.shopping-help ul {
+    list-style-type: none;
+}
+
+.shopping-help ul li {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* 页脚区域 */
+footer {
+    text-align: center;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 0;
+    margin-top: 20px;
+}
+
+footer p {
+    font-size: 14px;
+}
+.product-item a {
+    text-decoration: none; /* 去除链接下划线 */
+    color: #000; /* 设置链接文字颜色 */
+}
+
+.product-item a:hover {
+    text-decoration: underline; /* 鼠标悬停时显示下划线 */
+}
+.login-form {
+    max-width: 300px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-form input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background-color: #45a049;
+}
+
+.login-form p {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-form p a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.login-form p a:hover {
+    text-decoration: underline;
+}
+.contact-us {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact-us h1, .contact-us h2 {
+    text-align: center;
+}
+
+.contact-us ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.contact-us li {
+    margin-bottom: 10px;
+}
+
+.contact-us form {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-us label {
+    margin-bottom: 5px;
+}
+
+.contact-us input[type="text"],
+.contact-us input[type="email"],
+.contact-us textarea {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.contact-us input[type="submit"] {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.contact-us input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.product-detail {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+    width: 100%;
+    max-width: 400px;
+    display: block;
+    margin: 0 auto;
+}
+
+.product-description {
+    font-size: 16px;
+    color: #333;
+}
+
+.product-price {
+    font-size: 20px;
+    color: #e91e63;
+    margin: 10px 0;
+}
+
+.customer-reviews {
+    margin-top: 20px;
+}
+
+.customer-reviews p {
+    margin: 5px 0;
+}
+.rating {
+    color: #f90;
+}

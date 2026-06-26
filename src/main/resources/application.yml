@@ -1,0 +1,64 @@
+server:
+  port: 8080
+  address: 0.0.0.0
+
+
+spring:
+  application:
+    name: newMybatis
+  datasource:
+    url: jdbc:mysql://localhost:3306/tlias
+    username: root
+    password: 1234
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+
+  jackson:
+    deserialization:
+      read-unknown-enum-values-as-null: true
+
+  ai:
+    openai:
+
+      api-key: ${OPENAI_API_KEY}
+
+      base-url: https://gcli.ggchan.dev/v1
+
+      chat:
+        options:
+          model: agy-gemini-3-pro-high
+
+      embedding:
+        enabled: false
+
+    # 本地 Transformers Embedding 模型：从项目内的 classpath 读取，避免每次启动联网下载
+    embedding:
+      transformer:
+        enabled: true
+        onnx:
+          model-uri: classpath:/onnx/model.onnx
+        tokenizer:
+          uri: classpath:/onnx/tokenizer.json
+
+logging:
+  level:
+    org:
+      mybatis: INFO
+    org.springframework.web.client.RestClient: DEBUG
+    org.springframework.ai: DEBUG
+
+mybatis:
+  mapper-locations: classpath:examplemybatis/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+aliyun:
+  oss:
+    endpoint: https://oss-cn-guangzhou.aliyuncs.com
+    accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID}
+    accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET}
+    bucketName: my-ownbucket-test
+

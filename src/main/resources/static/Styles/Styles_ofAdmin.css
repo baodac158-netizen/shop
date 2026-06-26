@@ -1,0 +1,334 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+/* 头部样式 */
+header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 20px 0;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 300;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* 导航栏样式 */
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 20px;
+    flex-wrap: wrap;
+}
+
+/* 按钮基础样式 */
+button {
+    background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
+}
+
+/* 添加按钮特殊样式 */
+button[onclick*="showAdd"],
+button[onclick*="addEmp"]{
+    background: linear-gradient(45deg, #fa709a 0%, #fee140 100%);
+    box-shadow: 0 4px 15px rgba(250, 112, 154, 0.3);
+}
+
+button[onclick*="showAdd"]:hover,
+button[onclick*="addEmp"]:hover{
+    box-shadow: 0 6px 20px rgba(250, 112, 154, 0.4);
+}
+
+/* 主面板样式 */
+#main-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#main-panel h2 {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    position: relative;
+}
+
+#main-panel h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 2px;
+}
+
+/* 表格样式 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+th {
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    font-weight: 500;
+    text-align: center;
+    font-size: 16px;
+}
+
+td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.3s ease;
+}
+
+tr:hover td {
+    background-color: #f8f9ff;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* 表格内按钮样式 */
+td button {
+    padding: 6px 12px;
+    font-size: 14px;
+    margin: 0 3px;
+    border-radius: 15px;
+}
+
+td button[onclick*="edit"] {
+    background: linear-gradient(45deg, #ffeaa7 0%, #fab1a0 100%);
+    color: #2d3436;
+    box-shadow: 0 2px 8px rgba(255, 234, 167, 0.4);
+}
+
+td button[onclick*="delete"] {
+    background: linear-gradient(45deg, #fd79a8 0%, #e84393 100%);
+    box-shadow: 0 2px 8px rgba(253, 121, 168, 0.4);
+}
+
+/* 模态框样式 */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #fff 0%, #f8f9ff 100%);
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #aaa;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.close:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+/* 表单样式 */
+form h3, #add-emp-form h3, #add-dept-form h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+form label, #add-emp-form label, #add-dept-form label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 500;
+    color: #555;
+}
+
+form input, form textarea, form select,
+#add-emp-form input, #add-emp-form select,
+#add-dept-form input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-top: 5px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+form input:focus, form textarea:focus, form select:focus,
+#add-emp-form input:focus, #add-emp-form select:focus,
+#add-dept-form input:focus {
+    outline: none;
+    border-color: #4facfe;
+    box-shadow: 0 0 10px rgba(79, 172, 254, 0.2);
+}
+
+form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* 图片预览样式 */
+img {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    #main-panel {
+        margin: 10px;
+        padding: 20px;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 20px;
+    }
+
+    table, th, td {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+}
+
+
+
+

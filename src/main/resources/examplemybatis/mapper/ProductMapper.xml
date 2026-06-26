@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="examplemybatis.mapper.ProductMapper">
+
+    <select id="findAll" resultType="examplemybatis.pojo.Product">
+        SELECT * FROM product
+    </select>
+
+    <select id="findById" resultType="examplemybatis.pojo.Product">
+        SELECT * FROM product WHERE id = #{id}
+    </select>
+
+    <select id="searchByName" resultType="examplemybatis.pojo.Product">
+        SELECT * FROM product WHERE name LIKE #{keyword}
+    </select>
+
+
+    <insert id="insert" parameterType="examplemybatis.pojo.Product">
+        INSERT INTO product (name, description, price, image_url, stock)
+        VALUES (#{name}, #{description}, #{price}, #{imageUrl}, #{stock})
+    </insert>
+
+
+    <update id="update" parameterType="examplemybatis.pojo.Product">
+        UPDATE product
+        SET name=#{name}, description=#{description}, price=#{price},
+        image_url=#{imageUrl}, stock=#{stock}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="examplemybatis.pojo.Product">
+        DELETE FROM product WHERE id = #{id}
+    </delete>
+
+</mapper>
